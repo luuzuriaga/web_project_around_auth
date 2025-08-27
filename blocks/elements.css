@@ -1,0 +1,163 @@
+.elements {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.elements__group {
+  position: relative;
+  max-width: 282px;
+  background-color: #ffffff;
+  height: 361px;
+  border-radius: 5%;
+}
+
+.elements__grid {
+  margin-top: 50px;
+  max-width: 880px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 17px 21px;
+}
+
+.elements__button-delete {
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  top: 18px;
+  left: 249px;
+  cursor: pointer;
+}
+
+.button__delete {
+  max-width: 15px;
+  width: 100%;
+  top: -28px;
+}
+
+.elements__photo {
+  width: 100%;
+  height: 282px;
+  padding: 0;
+  margin: 0;
+  border-radius: 5% 5% 0 0;
+  cursor: pointer;
+}
+
+.elements__footer {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  position: relative;
+  padding: 0 20px;
+}
+
+.elements__footer-name {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 900;
+  font-size: 23px;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button__like {
+  background: url("/images/Group.png") center no-repeat;
+  width: 21px;
+  height: 19px;
+  border: none;
+  background-size: 100%;
+  position: absolute;
+  cursor: pointer;
+  padding: 0;
+  transition: 0.3s;
+  background-color: transparent;
+  right: 30px;
+}
+
+.button__like:hover {
+  transform: scale(1.3);
+}
+
+.button__like_active {
+  opacity: 1;
+  background: url("/images/heartblack.jpg") center no-repeat;
+  background-color: transparent;
+  background-size: 100%;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+@media screen and (max-width: 768px) {
+  .elements__grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .elements {
+    padding-left: 19px;
+    padding-right: 19px;
+  }
+  .elements__grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .element__footer-name {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+
+  .elements {
+    padding: 0 10px; /* Reduce el padding en móvil */
+  }
+  .elements__grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); /* 1 columna en móvil */
+    gap: 20px; /* Espacio entre tarjetas */
+    width: 100%;
+    margin-top: 36px;
+  }
+
+  .elements__group {
+    width: 100%; /* Ocupa el 100% del contenedor padre */
+    max-width: 282px; /* Pero no más de 282px */
+    height: auto; /* Altura flexible */
+    aspect-ratio: 282/361; /* Mantiene proporción (ancho/alto) */
+  }
+
+  .elements__photo {
+    width: 100%;
+    height: 282px;
+    object-fit: cover; /* Recorta la imagen manteniendo proporción */
+  }
+
+  .elements__footer-name {
+    font-size: 20px;
+  }
+}

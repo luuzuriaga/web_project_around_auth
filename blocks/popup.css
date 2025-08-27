@@ -1,0 +1,339 @@
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  /* visibility: hidden; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.popup__container {
+  position: relative;
+  max-width: 430px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  margin: 0 auto;
+  min-height: 200px; /* Altura mínima */
+  padding: 0px;
+  box-sizing: border-box; /* Incluye padding en dimensiones */
+  
+}
+
+.popup__new {
+  position: relative;
+  max-width: 430px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.popup__close {
+  position: absolute;
+  top: -76px;
+  right: -70px;
+  border: none;
+  background-color: transparent;
+  z-index: 2;
+}
+
+.popup__close-button {
+  width: 32px;
+  position: flex;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* Opcional: añade sombra para mejor visibilidad */
+}
+
+.popup__close:hover {
+  cursor: pointer;
+}
+
+.popup__title {
+  max-width: 330px;
+  margin-left: 36px;
+  margin-top: 34px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  color: #000000;
+  
+}
+
+.popup__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: none;
+  margin-left: 36px;
+}
+
+.popup__input {
+  border: none;
+  max-width: 358px;
+  width: 100%;
+  height: 28px;
+  margin-top: 20px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #c4c4c4;
+}
+
+.popup__line {
+  max-width: 358px;
+  height: 0%;
+  background-color: #ffffff;
+  border: 0.5px solid #e0dbdb;
+  color: #c4c4c4;
+  /* opacity: 0.7px; */
+}
+
+.popup__submit-button {
+  margin-top: 40px;
+  margin-bottom: 36px;
+  max-width: 358px;
+  height: 50px;
+  background: #000000;
+  border: 1px solid #c4c4c4;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: #ffffff;
+}
+.popup__submit-button:hover {
+  cursor: pointer;
+  background-color: #2e2e2eec;
+}
+
+.popup__modal {
+  position: relative;
+  max-width: 75vw; /* Ocupa el 75% del ancho de la pantalla */
+  width: auto; /* Ancho flexible */
+  margin: 0 auto;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.popup__modal-button {
+  top: -40px;
+  right: 0;
+  z-index: 2;
+}
+
+.popup__button-img {
+  width: 32px;
+}
+
+.popup__modal-content {
+  max-width: 100%;
+  max-height: 75vh; /* Altura máxima del 75% de la pantalla */
+  width: auto; /* Ancho flexible según la imagen */
+  height: auto;
+  object-fit: contain; /* Mantiene proporciones sin recortar */
+}
+
+.popup__modal-description {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #ffffff;
+}
+
+.popup__button_disabled {
+  /* opacity: 0.5; */
+  cursor: normal;
+}
+
+.popup__input_type_error {
+  border-bottom-color: red;
+}
+
+.popup__error {
+  font-size: 14px;
+  color: red;
+  margin-top: 16px;
+  display: none;
+}
+
+.popup__error_visible {
+  display: block;
+}
+
+.popup__submit-yes {
+  margin-top: 2px;
+}
+
+
+.popup__confirmation {
+  text-align: center;
+  padding: 0px 0px;
+  min-width: 200px;
+  background: #ffffff;
+  border-radius: 10px;
+  
+}
+
+.popup__confirmation-title {
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: #000;
+}
+
+.popup__confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+
+}
+
+.popup__button-confirm {
+  padding: 16px 175px;  /* Más ancho (de 30px a 80px) y un poco más alto */
+  background: #000000;  /* Fondo negro */
+  color: white;         /* Texto blanco */
+  border: none;
+  border-radius: 6px;   /* Bordes ligeramente más redondeados */
+  font-size: 16px;
+  font-weight: 500;     /* Texto seminegrita */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;       /* Para centrarlo */
+  margin: 20px auto 0;  /* Margen superior y centrado */
+  min-width: 200px;     /* Ancho mínimo garantizado */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.popup__button-confirm:hover {
+  background: #1d1d1d;
+  transform: scale(1.01);
+}
+
+.popup__button-cancel {
+  padding: 10px 30px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.popup__button-cancel:hover {
+  background: #e0e0e0;
+}
+
+.popup__confirmation-simple {
+  padding: 0px;
+  text-align: center;
+  min-width: 280px;
+}
+
+.popup__confirmation-buttons-single {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.popup__button-confirm-single {
+  padding: 12px 40px;
+  background: #000000;
+  color: rgba(255, 255, 255, 0.776);
+  border: none;
+  border-radius: 5px;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.popup__button-confirm-single:hover {
+  background: #151515;
+  transform: scale(1.05);
+}
+
+.popup__confirmation-buttons.single-button {
+  justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+  .popup__modal {
+    max-width: 50vh;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .popup__container {
+    max-width: 282px;
+  }
+  .popup__close {
+    position: absolute;
+    top: -52px;
+    right: -3px;
+    border: none;
+    background-color: transparent;
+  }
+  .popup__form {
+    margin: 0 auto;
+  }
+  .popup__input {
+    max-width: 238px;
+  }
+
+  .popup__submit-button {
+    max-width: 238px;
+    background: #000000;
+  }
+
+  .popup__modal {
+    max-width: 27vh;
+  }
+  .popup__modal-content {
+    height: 30vh;
+  }
+  .popup__modal-button {
+    top: -50px;
+    right: -10px;
+  }
+  .popup__title {
+    align-items: center;
+  }
+  .popup__button-confirm {
+  padding: 16px 120px;  /* Más ancho (de 30px a 80px) y un poco más alto */
+  background: #000000;  /* Fondo negro */
+  color: white;         /* Texto blanco */
+  border: none;
+  border-radius: 6px;   /* Bordes ligeramente más redondeados */
+  font-size: 16px;
+  font-weight: 500;     /* Texto seminegrita */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;       /* Para centrarlo */
+  margin: 20px auto 0;  /* Margen superior y centrado */
+  min-width: 200px;     /* Ancho mínimo garantizado */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+}
