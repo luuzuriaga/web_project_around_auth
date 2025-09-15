@@ -1,56 +1,75 @@
-import { useState } from "react";
-import api from "../../../../utils/Api";
+import React, { useState } from "react";
 
 export default function NewCard({ onAddPlaceSubmit }) {
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [link, setLink] = useState("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    onAddPlaceSubmit({ name: title, link: link });
+  function handleNameChange(event) {
+    setName(event.target.value);
+  }
+
+  function handleLinkChange(event) {
+    setLink(event.target.value);
+  }
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    
+    // Llamar a la función del parent con los datos de la nueva tarjeta
+    onAddPlaceSubmit({
+      name,
+      link
+    });
+    
+    // Limpiar el formulario después del envío
+    setName("");
+    setLink("");
   }
 
   return (
     <form
       className="popup__form"
-      id="add-place-form"
+      id="add-card-form"
       name="card-form"
       noValidate
       onSubmit={handleSubmit}
     >
       <label className="popup__field">
         <input
-          name="title"
+          name="name"
           type="text"
-          className="popup__input popup__input_type_name"
-          id="input-title"
+          className="popup__input popup__input_type_card-name"
+          id="input-card-name"
           placeholder="Título"
           required
           minLength="2"
           maxLength="30"
-          onChange={(e) => setTitle(e.target.value)}
+          value={name}
+          onChange={handleNameChange}
         />
-        <span className="popup__error" id="input-title-error"></span>
+        <span className="popup__error" id="input-card-name-error"></span>
         <div className="popup__line"></div>
       </label>
+      
       <label className="popup__field">
         <input
           name="link"
+          type="url"
+          className="popup__input popup__input_type_url"
           id="input-url"
-          className="popup__input popup__input_type_about"
           placeholder="Enlace a la imagen"
           required
-          type="url"
           value={link}
-          onChange={(e) => setLink(e.target.value)}
+          onChange={handleLinkChange}
         />
         <span className="popup__error" id="input-url-error"></span>
         <div className="popup__line"></div>
       </label>
+      
       <button
-        id="btn_create_card"
         type="submit"
         className="popup__submit-button"
+        id="button-create"
       >
         Crear
       </button>

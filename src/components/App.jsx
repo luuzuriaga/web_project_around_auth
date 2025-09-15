@@ -7,7 +7,7 @@ import Login from "./Login/Login.jsx";
 import Register from "./Register/Register.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
 import InfoTooltip from "./InfoTooltip/InfoTooltip.jsx";
-//import { CurrentUserProvider } from "../contexts/CurrentUserContext.jsx";
+import { CurrentUserProvider } from "../contexts/CurrentUserContext.jsx";
 import api from "../utils/Api.js";
 import auth from "../utils/auth.js";
 
@@ -19,7 +19,8 @@ function App() {
   const [popup, setPopup] = useState(null);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Iniciar en true para verificación inicial
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null); // Para el contexto
   const navigate = useNavigate();
 
   // Verificar si hay un token al cargar la aplicación
@@ -34,38 +35,43 @@ function App() {
         .then((res) => {
           setLoggedIn(true);
           setUserEmail(res.data.email);
+          // Obtener información completa del usuario
+          return api.getUserInformation();
+        })
+        .then((userData) => {
+          setCurrentUser(userData);
           navigate('/');
         })
         .catch((err) => {
           console.log('Token inválido:', err);
           localStorage.removeItem('jwt');
           api.removeToken();
-          navigate('/signin');
+          navigate('/signup');
         })
         .finally(() => {
           setIsLoading(false);
         });
     } else {
       setIsLoading(false);
-      navigate('/signin');
+      navigate('/signup');
     }
   }, [navigate]);
 
-  // Cargar datos del usuario y tarjetas cuando se autentique
+  // Cargar tarjetas cuando se autentique
   useEffect(() => {
-    if (loggedIn) {
-      Promise.all([api.getUserInformation(), api.getInitialCards()])
-        .then(([userData, cardsData]) => {
+    if (loggedIn && currentUser) {
+      api.getInitialCards()
+        .then((cardsData) => {
           // Procesar las tarjetas para determinar si están liked
           const processedCards = cardsData.map(card => ({
             ...card,
-            isLiked: card.likes && card.likes.some(like => like._id === userData._id)
+            isLiked: card.likes && card.likes.some(like => like._id === currentUser._id)
           }));
           setCards(processedCards);
         })
         .catch(console.error);
     }
-  }, [loggedIn]);
+  }, [loggedIn, currentUser]);
 
   const handleLogin = (formData) => {
     auth.login(formData.password, formData.email)
@@ -75,6 +81,13 @@ function App() {
           api.setToken(data.token);
           setLoggedIn(true);
           setUserEmail(formData.email);
+          // Obtener información del usuario después del login
+          return api.getUserInformation();
+        }
+      })
+      .then((userData) => {
+        if (userData) {
+          setCurrentUser(userData);
           navigate('/');
         }
       })
@@ -104,7 +117,9 @@ function App() {
     api.removeToken();
     setLoggedIn(false);
     setUserEmail('');
-    navigate('/signin');
+    setCurrentUser(null);
+    setCards([]);
+    navigate('/signup');
   };
 
   const handleCardLike = (card) => {
@@ -149,12 +164,17 @@ function App() {
     setIsInfoTooltipOpen(false);
   };
 
+  // Función para actualizar el usuario desde el contexto
+  const handleUpdateUser = (updatedUser) => {
+    setCurrentUser(updatedUser);
+  };
+
   if (isLoading) {
     return <div className="loading">Cargando...</div>;
   }
 
   return (
-    
+    <CurrentUserProvider currentUser={currentUser} onUpdateUser={handleUpdateUser}>
       <div className="page">
         <Header 
           loggedIn={loggedIn} 
@@ -193,7 +213,7 @@ function App() {
           />
           <Route 
             path="*" 
-            element={<Navigate to={loggedIn ? "/" : "/signin"} replace />} 
+            element={<Navigate to={loggedIn ? "/" : "/signup"} replace />} 
           />
         </Routes>
         
@@ -205,7 +225,7 @@ function App() {
           isSuccess={isSuccess}
         />
       </div>
-    
+    </CurrentUserProvider>
   );
 }
 

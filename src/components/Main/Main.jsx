@@ -43,13 +43,6 @@ function Main(props) {
     title: "¿Estás seguro?",
   };
 
-  const handleConfirmDelete = () => {
-    if (popup?.cardToDelete) {
-      onCardDelete(popup.cardToDelete);
-    }
-    onClosePopup();
-  };
-
   return (
     <main className="content">
       {/* Sección del perfil */}
@@ -57,7 +50,7 @@ function Main(props) {
         <div className="profile__content">
           <div className="profile__avatar-container">
             <img
-              src={userContext?.currentUser?.avatar}
+              src={userContext?.currentUser?.avatar || "https://via.placeholder.com/120"}
               alt="Foto Avatar"
               className="profile__avatar"
             />
@@ -80,7 +73,7 @@ function Main(props) {
               <h1 className="profile__header-title">
                 {userContext?.isLoadingUser
                   ? "Cargando..."
-                  : userContext?.currentUser?.name}
+                  : userContext?.currentUser?.name || "Usuario"}
               </h1>
               <button
                 aria-label="Edit Profile"
@@ -92,7 +85,7 @@ function Main(props) {
             <p className="profile__description">
               {userContext?.isLoadingUser
                 ? "Cargando..."
-                : userContext?.currentUser?.about}
+                : userContext?.currentUser?.about || "Explorador"}
             </p>
           </div>
         </div>
@@ -108,27 +101,26 @@ function Main(props) {
       </section>
 
       {/* Manejo de todos los popups */}
-
-{popup && (
-  <Popup onClose={onClosePopup} title={popup.title}>
-    {popup.type === 'removeCard' ? (
-      <RemoveCard 
-        onConfirm={() => {
-          // Esto llama a handleConfirmDelete en App.jsx a través de props
-          onCardDelete(popup.cardToDelete);
-          onClosePopup();
-        }}
-      />
-    ) : (
-      <>
-        {popup.card && (
-          <ImagePopup card={popup.card} onClose={onClosePopup} />
-        )}
-        {popup.Children}
-      </>
-    )}
-  </Popup>
-)}
+      {popup && (
+        <Popup onClose={onClosePopup} title={popup.title}>
+          {popup.type === 'removeCard' ? (
+            <RemoveCard 
+              onConfirm={() => {
+                onCardDelete(popup.cardToDelete);
+                onClosePopup();
+              }}
+            />
+          ) : popup.card ? (
+            <ImagePopup 
+              card={popup.card} 
+              onClose={onClosePopup}
+              isOpen={true}
+            />
+          ) : (
+            popup.Children
+          )}
+        </Popup>
+      )}
 
       {/* Sección de tarjetas */}
       <section className="elements">

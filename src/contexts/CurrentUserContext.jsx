@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import api from "../utils/Api";
 import React from "react";
 
@@ -13,17 +13,28 @@ function useCurrentUserContext() {
   }
   return context;
 }
-const CurrentUserProvider = (props) => {
-  const { children } = props;
-  const [currentUser, setCurrentUser] = useState({});
+
+const CurrentUserProvider = ({ children, currentUser: initialUser, onUpdateUser }) => {
+  const [currentUser, setCurrentUser] = useState(initialUser || {});
   const [isLoadingUser, setIsLoadingUser] = useState(false);
+
+  // Sincronizar con el usuario del App component
+  useEffect(() => {
+    if (initialUser) {
+      setCurrentUser(initialUser);
+    }
+  }, [initialUser]);
 
   const handleGetUser = async () => {
     return new Promise((resolve, reject) => {
+      setIsLoadingUser(true);
       api
         .getUserInformation()
         .then((data) => {
           setCurrentUser(data);
+          if (onUpdateUser) {
+            onUpdateUser(data);
+          }
           setIsLoadingUser(false);
           resolve(true);
         })
@@ -37,10 +48,14 @@ const CurrentUserProvider = (props) => {
 
   const handleUpdateUser = async (userInfo) => {
     return new Promise((resolve, reject) => {
+      setIsLoadingUser(true);
       api
         .updateUserProfile(userInfo)
         .then((updatedUser) => {
           setCurrentUser(updatedUser);
+          if (onUpdateUser) {
+            onUpdateUser(updatedUser);
+          }
           setIsLoadingUser(false);
           resolve(true);
         })
@@ -54,15 +69,21 @@ const CurrentUserProvider = (props) => {
 
   const handleUpdateAvatar = async ({ avatar }) => {
     return new Promise((resolve, reject) => {
+      setIsLoadingUser(true);
       api
         .updateProfilePhoto(avatar)
-        .then((updatedAvatar) => {
-          setCurrentUser(updatedAvatar);
+        .then((updatedUser) => {
+          setCurrentUser(updatedUser);
+          if (onUpdateUser) {
+            onUpdateUser(updatedUser);
+          }
+          setIsLoadingUser(false);
           resolve(true);
         })
         .catch((error) => {
           console.error("Error al actualizar el avatar:", error);
-          resolve(error);
+          setIsLoadingUser(false);
+          resolve(false);
         });
     });
   };
@@ -81,4 +102,5 @@ const CurrentUserProvider = (props) => {
     </CurrentUserContext.Provider>
   );
 };
+
 export { CurrentUserProvider, useCurrentUserContext };
