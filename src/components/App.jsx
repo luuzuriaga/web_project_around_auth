@@ -8,7 +8,7 @@ import Register from "./Register/Register.jsx";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
 import InfoTooltip from "./InfoTooltip/InfoTooltip.jsx";
 //import { CurrentUserProvider } from "../contexts/CurrentUserContext.jsx";
-import api from "../utils/api.js";
+import api from "../utils/Api.js";
 import auth from "../utils/auth.js";
 
 // Componente principal que usa el Router

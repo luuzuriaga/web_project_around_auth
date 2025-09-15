@@ -6,7 +6,7 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-  /* visibility: hidden; */
+  visibility: hidden;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Login({ onLogin }) {
   const [formData, setFormData] = useState({
@@ -43,6 +44,9 @@ function Login({ onLogin }) {
         />
         <button className="auth__button" type="submit">Iniciar sesión</button>
       </form>
+      <p className="auth__link">
+        ¿No eres miembro? <Link to="/signup">Regístrate aquí</Link>
+      </p>
     </div>
   );
 }

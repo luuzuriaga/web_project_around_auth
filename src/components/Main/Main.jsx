@@ -4,7 +4,7 @@ import NewCard from "./Popup/NewCard/NewCard.jsx";
 import EditAvatar from "./Popup/EditAvatar/EditAvatar.jsx";
 import EditProfile from "./Popup/EditProfile/EditProfile.jsx";
 import Popup from "./Popup/Popup.jsx";
-import Card from "../../components/Cards/Cards.jsx";
+import Card from "../Cards/Cards.jsx";
 import ImagePopup from "./Popup/ImagePopup/ImagePopup.jsx";
 import RemoveCard from "./Popup/RemoveCard/RemoveCard.jsx";
 import { useCurrentUserContext } from "../../contexts/CurrentUserContext.jsx";

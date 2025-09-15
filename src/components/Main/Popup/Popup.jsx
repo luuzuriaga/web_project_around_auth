@@ -2,9 +2,9 @@ import React from "react";
 import closeButton from "../../../../images/CloseIcon.png";
 
 export default function Popup(props) {
-  const { onClose, title, children } = props;
+  const { onClose, title, children, isOpen = true } = props;
   return (
-    <div className="popup">
+    <div className={`popup ${isOpen ? 'popup_opened' : ''}`}>
       <div
         className={`popup__container ${
           !title ? "popup__container_container_image" : ""

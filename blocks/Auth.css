@@ -67,9 +67,24 @@
 }
 
 .header__auth {
+    display: flex;
+  align-items: center;
+  gap: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+
+}
+
+.header__auth-container {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   gap: 20px;
+  z-index: 10;
 }
 
 .header__email {
@@ -98,6 +113,10 @@
 .header__nav {
   display: flex;
   gap: 20px;
+  position: absolute;
+  margin-top: 45px;
+  right: 0;
+  z-index: 10;
 }
 
 .header__link {

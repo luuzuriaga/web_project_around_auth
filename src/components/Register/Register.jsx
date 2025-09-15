@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Register({ onRegister }) {
   const [formData, setFormData] = useState({
@@ -43,6 +44,9 @@ function Register({ onRegister }) {
         />
         <button className="auth__button" type="submit">Registrarse</button>
       </form>
+      <p className="auth__link">
+        ¿Ya eres miembro? <Link to="/signin">Inicia sesión aquí</Link>
+      </p>
     </div>
   );
 }
