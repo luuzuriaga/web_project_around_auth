@@ -26,6 +26,20 @@ class Api {
         return Promise.reject(`Error: ${res.status}`);
       }
       return res.json();
+    })
+    .then((data) => {
+      // La API de TripleTen devuelve { data: { email, _id } }
+      // pero necesitamos mantener compatibilidad con el frontend
+      if (data.data) {
+        return {
+          email: data.data.email,
+          _id: data.data._id,
+          name: data.data.name || 'Usuario', // valor por defecto
+          about: data.data.about || 'Explorador', // valor por defecto
+          avatar: data.data.avatar || 'https://via.placeholder.com/120'
+        };
+      }
+      return data;
     });
   }
 
@@ -40,6 +54,16 @@ class Api {
         return Promise.reject(`Error: ${res.status}`);
       }
       return res.json();
+    })
+    .then((data) => {
+      // Procesar las tarjetas para añadir la propiedad isLiked
+      if (Array.isArray(data)) {
+        return data.map(card => ({
+          ...card,
+          isLiked: card.likes && card.likes.length > 0 // Ajustar según la estructura de la API
+        }));
+      }
+      return data;
     });
   }
 
@@ -55,6 +79,10 @@ class Api {
         return Promise.reject(`Error: ${res.status}`);
       }
       return res.json();
+    })
+    .then((data) => {
+      // Procesar respuesta si viene envuelta en data
+      return data.data || data;
     });
   }
 
@@ -70,6 +98,14 @@ class Api {
         return Promise.reject(`Error: ${res.status}`);
       }
       return res.json();
+    })
+    .then((data) => {
+      // Añadir isLiked a la nueva tarjeta
+      const card = data.data || data;
+      return {
+        ...card,
+        isLiked: false
+      };
     });
   }
 
@@ -84,6 +120,13 @@ class Api {
         return Promise.reject(`Error: ${res.status}`);
       }
       return res.json();
+    })
+    .then((data) => {
+      const card = data.data || data;
+      return {
+        ...card,
+        isLiked: like
+      };
     });
   }
 
@@ -113,10 +156,15 @@ class Api {
         return Promise.reject(`Error: ${res.status}`);
       }
       return res.json();
+    })
+    .then((data) => {
+      // Procesar respuesta si viene envuelta en data
+      return data.data || data;
     });
   }
 }
 
+// Cambiar a la URL base de TripleTen
 const api = new Api({
   baseUrl: "https://around-api.es.tripleten-services.com/v1",
   headers: {

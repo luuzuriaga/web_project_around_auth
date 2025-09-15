@@ -59,7 +59,12 @@ class Auth {
 
   async _checkResponse(res) {
     if (res.ok) {
-      return res.json();
+      const data = await res.json();
+      // La API de TripleTen devuelve los datos en formato diferente
+      // Para registro: { data: { email, _id } }
+      // Para login: { token }
+      // Para checkToken: { data: { email, _id } }
+      return data;
     }
     
     // Intentar obtener el mensaje de error del servidor

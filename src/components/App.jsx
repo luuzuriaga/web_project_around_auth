@@ -30,7 +30,9 @@ function App() {
     const token = localStorage.getItem('token');
     if (token) {
       auth.checkToken(token)
-        .then((userData) => {
+        .then((response) => {
+          // La API de TripleTen devuelve { data: { email, _id } }
+          const userData = response.data || response;
           setLoggedIn(true);
           setCurrentUser(userData);
           api.setToken(token);
@@ -66,15 +68,21 @@ function App() {
   // Manejar registro
   const handleRegister = async ({ email, password }) => {
     try {
-      await auth.register(password, email);
-      setIsSuccess(true);
-      setIsInfoTooltipOpen(true);
-      // Redirigir al login después de registro exitoso
-      setTimeout(() => {
-        navigate('/signin');
-      }, 2000);
+      console.log('Intentando registrar:', { email }); // Debug
+      const result = await auth.register(password, email);
+      console.log('Registro exitoso:', result); // Debug
+      
+      // La API devuelve { data: { email, _id } } en caso de éxito
+      if (result.data || result.email) {
+        setIsSuccess(true);
+        setIsInfoTooltipOpen(true);
+        // Redirigir al login después de registro exitoso
+        setTimeout(() => {
+          navigate('/signin');
+        }, 2000);
+      }
     } catch (error) {
-      console.error('Error en registro:', error);
+      console.error('Error completo en registro:', error);
       setIsSuccess(false);
       setIsInfoTooltipOpen(true);
     }
@@ -83,7 +91,9 @@ function App() {
   // Manejar login
   const handleLogin = async ({ email, password }) => {
     try {
+      console.log('Intentando login:', { email }); // Debug
       const data = await auth.login(password, email);
+      console.log('Login response:', data); // Debug
       
       if (data.token) {
         localStorage.setItem('token', data.token);
@@ -91,9 +101,11 @@ function App() {
         setLoggedIn(true);
         navigate('/');
         loadInitialData();
+      } else {
+        throw new Error('No se recibió token del servidor');
       }
     } catch (error) {
-      console.error('Error en login:', error);
+      console.error('Error completo en login:', error);
       setIsSuccess(false);
       setIsInfoTooltipOpen(true);
     }
