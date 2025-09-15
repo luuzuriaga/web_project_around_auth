@@ -11,166 +11,162 @@ import { CurrentUserProvider } from "../contexts/CurrentUserContext.jsx";
 import api from "../utils/Api.js";
 import auth from "../utils/auth.js";
 
-// Componente principal que usa el Router
 function App() {
+  // Estados principales
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
   const [cards, setCards] = useState([]);
   const [popup, setPopup] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Estados para InfoTooltip
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null); // Para el contexto
+  
   const navigate = useNavigate();
 
-  // Verificar si hay un token al cargar la aplicación
+  // Verificar token al cargar la app
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem('token');
     if (token) {
-      // Configurar el token en la API
-      api.setToken(token);
-      
-      // Verificar si el token es válido
       auth.checkToken(token)
-        .then((res) => {
-          setLoggedIn(true);
-          setUserEmail(res.data.email);
-          // Obtener información completa del usuario
-          return api.getUserInformation();
-        })
         .then((userData) => {
+          setLoggedIn(true);
           setCurrentUser(userData);
-          navigate('/');
+          api.setToken(token);
+          loadInitialData();
         })
-        .catch((err) => {
-          console.log('Token inválido:', err);
-          localStorage.removeItem('jwt');
-          api.removeToken();
-          navigate('/signup');
-        })
-        .finally(() => {
+        .catch((error) => {
+          console.error('Token inválido:', error);
+          localStorage.removeItem('token');
           setIsLoading(false);
         });
     } else {
       setIsLoading(false);
-      navigate('/signup');
     }
-  }, [navigate]);
+  }, []);
 
-  // Cargar tarjetas cuando se autentique
-  useEffect(() => {
-    if (loggedIn && currentUser) {
-      api.getInitialCards()
-        .then((cardsData) => {
-          // Procesar las tarjetas para determinar si están liked
-          const processedCards = cardsData.map(card => ({
-            ...card,
-            isLiked: card.likes && card.likes.some(like => like._id === currentUser._id)
-          }));
-          setCards(processedCards);
-        })
-        .catch(console.error);
+  // Cargar datos iniciales (usuario y tarjetas)
+  const loadInitialData = async () => {
+    try {
+      const [userData, cardsData] = await Promise.all([
+        api.getUserInformation(),
+        api.getInitialCards()
+      ]);
+      
+      setCurrentUser(userData);
+      setCards(cardsData);
+    } catch (error) {
+      console.error('Error cargando datos iniciales:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [loggedIn, currentUser]);
-
-  const handleLogin = (formData) => {
-    auth.login(formData.password, formData.email)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('jwt', data.token);
-          api.setToken(data.token);
-          setLoggedIn(true);
-          setUserEmail(formData.email);
-          // Obtener información del usuario después del login
-          return api.getUserInformation();
-        }
-      })
-      .then((userData) => {
-        if (userData) {
-          setCurrentUser(userData);
-          navigate('/');
-        }
-      })
-      .catch((err) => {
-        console.log('Error en login:', err);
-        setIsSuccess(false);
-        setIsInfoTooltipOpen(true);
-      });
   };
 
-  const handleRegister = (formData) => {
-    auth.register(formData.password, formData.email)
-      .then((data) => {
-        setIsSuccess(true);
-        setIsInfoTooltipOpen(true);
+  // Manejar registro
+  const handleRegister = async ({ email, password }) => {
+    try {
+      await auth.register(password, email);
+      setIsSuccess(true);
+      setIsInfoTooltipOpen(true);
+      // Redirigir al login después de registro exitoso
+      setTimeout(() => {
         navigate('/signin');
-      })
-      .catch((err) => {
-        console.log('Error en registro:', err);
-        setIsSuccess(false);
-        setIsInfoTooltipOpen(true);
-      });
+      }, 2000);
+    } catch (error) {
+      console.error('Error en registro:', error);
+      setIsSuccess(false);
+      setIsInfoTooltipOpen(true);
+    }
   };
 
+  // Manejar login
+  const handleLogin = async ({ email, password }) => {
+    try {
+      const data = await auth.login(password, email);
+      
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        api.setToken(data.token);
+        setLoggedIn(true);
+        navigate('/');
+        loadInitialData();
+      }
+    } catch (error) {
+      console.error('Error en login:', error);
+      setIsSuccess(false);
+      setIsInfoTooltipOpen(true);
+    }
+  };
+
+  // Manejar logout
   const handleSignOut = () => {
-    localStorage.removeItem('jwt');
+    localStorage.removeItem('token');
     api.removeToken();
     setLoggedIn(false);
-    setUserEmail('');
     setCurrentUser(null);
     setCards([]);
-    navigate('/signup');
+    navigate('/signin');
   };
 
-  const handleCardLike = (card) => {
-    const isLiked = card.isLiked;
-    api.like(card._id, !isLiked)
-      .then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? {
-          ...newCard,
-          isLiked: !isLiked
-        } : c));
-      })
-      .catch(console.error);
-  };
-
-  const handleCardDelete = (card) => {
-    api.deleteCard(card._id)
-      .then(() => {
-        setCards((state) => state.filter((c) => c._id !== card._id));
-        handleClosePopup();
-      })
-      .catch(console.error);
-  };
-
-  const handleAddPlaceSubmit = (cardData) => {
-    api.createCard(cardData)
-      .then((newCard) => {
-        setCards([newCard, ...cards]);
-        handleClosePopup();
-      })
-      .catch(console.error);
-  };
-
+  // Manejar apertura de popup
   const handleOpenPopup = (popupConfig) => {
     setPopup(popupConfig);
   };
 
+  // Manejar cierre de popup
   const handleClosePopup = () => {
     setPopup(null);
   };
 
-  const handleCloseInfoTooltip = () => {
-    setIsInfoTooltipOpen(false);
+  // Manejar like de tarjeta
+  const handleCardLike = async (card) => {
+    try {
+      const isLiked = card.isLiked;
+      const newCard = await api.like(card._id, !isLiked);
+      
+      setCards((prevCards) =>
+        prevCards.map((c) => (c._id === card._id ? newCard : c))
+      );
+    } catch (error) {
+      console.error('Error al dar like:', error);
+    }
   };
 
-  // Función para actualizar el usuario desde el contexto
-  const handleUpdateUser = (updatedUser) => {
-    setCurrentUser(updatedUser);
+  // Manejar eliminación de tarjeta
+  const handleCardDelete = async (card) => {
+    try {
+      await api.deleteCard(card._id);
+      setCards((prevCards) => prevCards.filter((c) => c._id !== card._id));
+    } catch (error) {
+      console.error('Error al eliminar tarjeta:', error);
+    }
+  };
+
+  // Manejar agregar nueva tarjeta
+  const handleAddPlaceSubmit = async (cardData) => {
+    try {
+      const newCard = await api.createCard(cardData);
+      setCards((prevCards) => [newCard, ...prevCards]);
+      handleClosePopup();
+    } catch (error) {
+      console.error('Error al crear tarjeta:', error);
+    }
+  };
+
+  // Actualizar usuario desde context
+  const handleUpdateUser = (userData) => {
+    setCurrentUser(userData);
   };
 
   if (isLoading) {
-    return <div className="loading">Cargando...</div>;
+    return (
+      <div className="page">
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          Cargando...
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -178,16 +174,38 @@ function App() {
       <div className="page">
         <Header 
           loggedIn={loggedIn} 
-          userEmail={userEmail} 
+          userEmail={currentUser?.email} 
           onSignOut={handleSignOut} 
         />
         
         <Routes>
           <Route 
+            path="/signin" 
+            element={
+              loggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Login onLogin={handleLogin} />
+              )
+            } 
+          />
+          
+          <Route 
+            path="/signup" 
+            element={
+              loggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Register onRegister={handleRegister} />
+              )
+            } 
+          />
+          
+          <Route 
             path="/" 
             element={
               <ProtectedRoute 
-                loggedIn={loggedIn} 
+                loggedIn={loggedIn}
                 component={Main}
                 onOpenPopup={handleOpenPopup}
                 onClosePopup={handleClosePopup}
@@ -199,29 +217,15 @@ function App() {
               />
             } 
           />
-          <Route 
-            path="/signin" 
-            element={
-              loggedIn ? <Navigate to="/" replace /> : <Login onLogin={handleLogin} />
-            } 
-          />
-          <Route 
-            path="/signup" 
-            element={
-              loggedIn ? <Navigate to="/" replace /> : <Register onRegister={handleRegister} />
-            } 
-          />
-          <Route 
-            path="*" 
-            element={<Navigate to={loggedIn ? "/" : "/signup"} replace />} 
-          />
+          
+          <Route path="*" element={<Navigate to={loggedIn ? "/" : "/signin"} replace />} />
         </Routes>
-        
+
         <Footer />
-        
+
         <InfoTooltip 
           isOpen={isInfoTooltipOpen}
-          onClose={handleCloseInfoTooltip}
+          onClose={() => setIsInfoTooltipOpen(false)}
           isSuccess={isSuccess}
         />
       </div>
