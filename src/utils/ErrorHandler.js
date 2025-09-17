@@ -33,6 +33,4 @@ export const getErrorMessage = (error, defaultMessage = 'Ha ocurrido un error') 
 export const logError = (error, context = '') => {
   console.error(`Error ${context}:`, error);
   
-  // En producción, aquí podrías enviar el error a un servicio de monitoreo
-  // como Sentry, LogRocket, etc.
 };
