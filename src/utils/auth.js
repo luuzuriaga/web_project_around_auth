@@ -6,7 +6,7 @@ class Auth {
 
   // Registrar usuario
   register(password, email) {
-    console.log('Auth.register llamado con:', { email, passwordLength: password?.length });
+    console.log('🔄 Auth.register llamado con:', { email, passwordLength: password?.length });
     return fetch(`${this._baseUrl}/signup`, {
       method: 'POST',
       headers: {
@@ -15,19 +15,18 @@ class Auth {
       body: JSON.stringify({ password, email })
     })
     .then((res) => {
-      console.log('Response status:', res.status);
-      console.log('Response headers:', res.headers);
+      console.log('📡 Response status register:', res.status);
       return this._checkResponse(res);
     })
     .catch((error) => {
-      console.error('Error en fetch de register:', error);
+      console.error('❌ Error en fetch de register:', error);
       throw error;
     });
   }
 
   // Iniciar sesión
   login(password, email) {
-    console.log('Auth.login llamado con:', { email, passwordLength: password?.length });
+    console.log('🔄 Auth.login llamado con:', { email, passwordLength: password?.length });
     return fetch(`${this._baseUrl}/signin`, {
       method: 'POST',
       headers: {
@@ -36,17 +35,18 @@ class Auth {
       body: JSON.stringify({ password, email })
     })
     .then((res) => {
-      console.log('Login response status:', res.status);
+      console.log('📡 Login response status:', res.status);
       return this._checkResponse(res);
     })
     .catch((error) => {
-      console.error('Error en fetch de login:', error);
+      console.error('❌ Error en fetch de login:', error);
       throw error;
     });
   }
 
   // Verificar token
   checkToken(token) {
+    console.log('🔄 Verificando token...'); // Debug
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: {
@@ -54,12 +54,17 @@ class Auth {
         'Authorization': `Bearer ${token}`
       }
     })
-    .then(this._checkResponse);
+    .then((res) => {
+      console.log('📡 CheckToken response status:', res.status); // Debug
+      return this._checkResponse(res);
+    });
   }
 
   async _checkResponse(res) {
     if (res.ok) {
       const data = await res.json();
+      console.log('✅ Respuesta exitosa:', data); // Debug
+      
       // La API de TripleTen devuelve los datos en formato diferente
       // Para registro: { data: { email, _id } }
       // Para login: { token }
@@ -72,15 +77,18 @@ class Auth {
     try {
       const errorData = await res.json();
       errorMessage = errorData.message || errorData.error || errorMessage;
+      console.log('📄 Detalles del error:', errorData); // Debug
     } catch (e) {
       // Si no se puede parsear el JSON del error, usar el mensaje por defecto
+      console.log('⚠️ No se pudo parsear el error JSON'); // Debug
     }
     
-    console.error('Error response:', errorMessage);
+    console.error('❌ Error response:', errorMessage);
     return Promise.reject(errorMessage);
   }
 }
 
+// Configuración de auth para TripleTen
 const auth = new Auth('https://se-register-api.en.tripleten-services.com/v1');
 
 export default auth;

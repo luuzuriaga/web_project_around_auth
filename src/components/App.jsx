@@ -49,21 +49,26 @@ function App() {
   }, []);
 
   // Cargar datos iniciales (usuario y tarjetas)
-  const loadInitialData = async () => {
-    try {
-      const [userData, cardsData] = await Promise.all([
-        api.getUserInformation(),
-        api.getInitialCards()
-      ]);
-      
-      setCurrentUser(userData);
-      setCards(cardsData);
-    } catch (error) {
-      console.error('Error cargando datos iniciales:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const loadInitialData = async () => {
+  try {
+    console.log('Cargando datos iniciales...'); // Debug
+    const [userData, cardsData] = await Promise.all([
+      api.getUserInformation(),
+      api.getInitialCards()
+    ]);
+    
+    console.log('Datos de usuario:', userData); // Debug
+    console.log('Datos de tarjetas:', cardsData); // Debug
+    console.log('Número de tarjetas:', cardsData?.length); // Debug
+    
+    setCurrentUser(userData);
+    setCards(cardsData);
+  } catch (error) {
+    console.error('Error cargando datos iniciales:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Manejar registro
   const handleRegister = async ({ email, password }) => {
