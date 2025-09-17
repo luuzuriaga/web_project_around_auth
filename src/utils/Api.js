@@ -180,9 +180,10 @@ class Api {
 
 
 const api = new Api({
-  baseUrl: "https://se-register-api.en.tripleten-services.com/v1", 
+  baseUrl: "https://around-api.es.tripleten-services.com/v1",
   headers: {
     "Content-Type": "application/json",
+    
   },
 });
 
