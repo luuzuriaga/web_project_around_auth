@@ -101,6 +101,10 @@ const loadInitialData = async () => {
       console.log('Login response:', data); // Debug
       
       if (data.token) {
+        console.log('TOKEN RECIBIDO:', data.token); // IMPORTANTE: ver el token completo
+        console.log('LONGITUD DEL TOKEN:', data.token.length); // Ver si es un JWT válido
+      
+
         localStorage.setItem('token', data.token);
         api.setToken(data.token);
         setLoggedIn(true);

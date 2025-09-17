@@ -178,12 +178,11 @@ class Api {
   }
 }
 
-// Configuración SIN token estático - se añadirá dinámicamente
+
 const api = new Api({
-  baseUrl: "https://around-api.es.tripleten-services.com/v1",
+  baseUrl: "https://se-register-api.en.tripleten-services.com/v1", 
   headers: {
     "Content-Type": "application/json",
-    // NO incluir authorization aquí - se establece dinámicamente con setToken()
   },
 });
 
