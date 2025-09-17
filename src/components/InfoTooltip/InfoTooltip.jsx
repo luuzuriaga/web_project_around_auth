@@ -1,40 +1,8 @@
 import React from 'react';
-//import successIcon from '../../../images/success-icon.png';
-//import failIcon from '../../../images/fail-icon.png';
+import successIcon from '../../../images/check.png';
+import failIcon from '../../../images/error.png';
 
 function InfoTooltip({ isOpen, onClose, isSuccess }) {
-  // SVG del check verde para éxito
-  const SuccessIcon = () => (
-    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-      <circle cx="60" cy="60" r="60" fill="#00C853"/>
-      <circle cx="60" cy="60" r="50" fill="#FFFFFF"/>
-      <circle cx="60" cy="60" r="40" fill="#00C853"/>
-      <path 
-        d="M45 60L55 70L75 50" 
-        stroke="#FFFFFF" 
-        strokeWidth="4" 
-        strokeLinecap="round" 
-        strokeLinejoin="round"
-        fill="none"
-      />
-    </svg>
-  );
-
-  // SVG del X rojo para error
-  const ErrorIcon = () => (
-    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-      <circle cx="60" cy="60" r="60" fill="#FF5252"/>
-      <circle cx="60" cy="60" r="50" fill="#FFFFFF"/>
-      <circle cx="60" cy="60" r="40" fill="#FF5252"/>
-      <path 
-        d="M45 45L75 75M75 45L45 75" 
-        stroke="#FFFFFF" 
-        strokeWidth="4" 
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-
   return (
     <div className={`popup ${isOpen ? 'popup_opened' : ''}`}>
       <div className="popup__container">
@@ -46,7 +14,11 @@ function InfoTooltip({ isOpen, onClose, isSuccess }) {
         ></button>
         
         <div className="popup__icon">
-          {isSuccess ? <SuccessIcon /> : <ErrorIcon />}
+          <img 
+            src={isSuccess ? successIcon : failIcon} 
+            alt={isSuccess ? "Éxito" : "Error"} 
+            className="popup__icon-image"
+          />
         </div>
         
         <h2 className="popup__message">
