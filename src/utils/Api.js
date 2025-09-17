@@ -1,4 +1,3 @@
-// utils/api.js
 // utils/Api.js
 class Api {
   constructor(options) {
